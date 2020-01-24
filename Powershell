@@ -1,0 +1,33 @@
+
+$ex = read-host 
+if ($ex = imprimir)
+{
+    echo $ex
+    $1 = (Invoke-WebRequest "http://10.202.0.116/php/Bases.php?valor=imprimir")
+    $tamaño = ($1.AllElements.innerText[1])
+
+    foreach ($trabajo in Get-PrintJob "Microsoft Print to PDF")
+    {
+        if($trabajo.Size -gt $tamaño)
+        {
+            "Tiene 10MB, LO ELIMINO"
+            Remove-PrintJob -ID $trabajo.Id -PrinterName "Microsoft Print to PDF"
+        }
+    }
+
+}
+if ($ex = ip)
+    {
+    echo $ex
+    $2 = (Invoke-WebRequest "http://10.202.0.116/php/Bases.php?valor=ip")
+    $ipI = ($2.AllElements.innerText[1])
+
+    New-SSHSession -ComputerName $ipI -Credential (Get-Credential)
+    }
+if ($ex = firewall)
+    {
+    echo $ex
+    $3 = (Invoke-WebRequest "http://10.202.0.116/php/Bases.php?valor=firewall")
+    $fire = ($3.AllElements.innerText[1])
+    New-NetFirewallRule -DisplayName cllase232 -Action Allow -Direction Inbound -Enabled True -Protocol $fire -LocalPort 2020
+}
