@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+
+</head>
+
+<body>
+    
+    <?php $VALOR = $_GET['valor']; 
+
+    if ($VALOR == "imprimir")
+    {
+        $base = parse_ini_file("datos.ini");
+        $php = new PDO($base["baseDeDatos"],$base["usuario"],$base["password"]);
+        $con = $php->prepare("SELECT * from examen");
+		$con->execute();
+		$registros = $con->fetchAll(PDO::FETCH_NUM);
+		$n = count($registros);
+		$texto1 = $registros[0][0];
+        ?><h1><?php echo $texto1 ?></h1><?php
+    }
+     if ($VALOR == "ip")
+    {
+        $base = parse_ini_file("datos.ini");
+        $php = new PDO($base["baseDeDatos"],$base["usuario"],$base["password"]);
+        $con = $php->prepare("SELECT * from examen");
+		$con->execute();
+		$registros = $con->fetchAll(PDO::FETCH_NUM);
+		$php = null;
+		
+		$n = count($registros);
+		$texto = $registros[0][1];
+        ?><h1><?php echo $texto ?></h1><?php
+    }
+     if ($VALOR == "firewall")
+    {
+        $base = parse_ini_file("datos.ini");
+        $php = new PDO($base["baseDeDatos"],$base["usuario"],$base["password"]);
+        $con = $php->prepare("SELECT * from examen");
+		$con->execute();
+		$registros = $con->fetchAll(PDO::FETCH_NUM);
+		$php = null;
+		
+		$n = count($registros);
+		$texto = $registros[0][2];
+        ?><h1><?php echo $texto ?></h1><?php
+    }
+	?>
+
+</body>
+
+    
+</html>
