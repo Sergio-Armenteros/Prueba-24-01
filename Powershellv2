@@ -1,0 +1,64 @@
+[Reflection.Assembly]::LoadWithPartialName("System.Web")
+$pass=Read-Host 'Elija una opcion: imprimir, ip o firewall'
+[System.Web.Security.FormsAuthentication]::HashPasswordForStoringInConfigFile($pass, "SHA1") | Out-File .\1.txt
+$ex = (gc .\1.txt)
+rm .\1.txt
+
+[Reflection.Assembly]::LoadWithPartialName("System.Web")
+[System.Web.Security.FormsAuthentication]::HashPasswordForStoringInConfigFile("imprimir", "SHA1") | Out-File 2.txt 
+$imprimir1 = (gc .\2.txt)
+rm .\2.txt
+$imprimir = $imprimir1.ToLower()
+
+[Reflection.Assembly]::LoadWithPartialName("System.Web")
+[System.Web.Security.FormsAuthentication]::HashPasswordForStoringInConfigFile("ip", "SHA1") | Out-File 3.txt 
+$ip1 = (gc .\3.txt)
+rm .\3.txt
+$ip = $ip1.ToLower()
+
+[Reflection.Assembly]::LoadWithPartialName("System.Web")
+[System.Web.Security.FormsAuthentication]::HashPasswordForStoringInConfigFile("firewall", "SHA1") | Out-File 4.txt 
+$firewall1 = (gc .\4.txt)
+rm .\4.txt
+$firewall = $firewall1.ToLower()
+
+
+[Reflection.Assembly]::LoadWithPartialName("System.Web")
+[System.Web.Security.FormsAuthentication]::HashPasswordForStoringInConfigFile("enviar", "SHA1") | Out-File 5.txt 
+$enviar = (gc .\5.txt)
+rm .\5.txt
+
+
+if ($ex -eq $imprimir)
+{
+    echo "Imprimir"
+    $1 = (Invoke-WebRequest "http://10.202.0.116/php/php-exa.php?$enviar=$imprimir")
+    $tamaño = ($1.AllElements.innerText[1])
+
+
+    foreach ($trabajo in Get-PrintJob "Generic / Text Only")
+    {
+        if($trabajo.Size -gt $tamaño)
+        {
+            "Tiene 10kB, LO ELIMINO"
+            Remove-PrintJob -ID $trabajo.Id -PrinterName "Generic / Text Only"
+        }
+    }
+
+}
+if ($ex-eq $ip)
+    {
+    echo "Conexion ssh"
+    $2 = (Invoke-WebRequest "http://10.202.0.116/php/php-exa.php?$enviar=$ip")
+    $ipI = ($2.AllElements.innerText[1])
+    echo "El comando es : ssh Usuario@$ipI"
+    Start-Sleep -Seconds 5
+    start C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+    }
+if ($ex -eq $firewall)
+    {
+    echo "firewall"
+    $3 = (Invoke-WebRequest "http://10.202.0.116/php/php-exa.php?$enviar=$firewall")
+    $fire = ($3.AllElements.innerText[1])
+    New-NetFirewallRule -DisplayName cllase232 -Action Allow -Direction Inbound -Enabled True -Protocol $fire -LocalPort 2020
+}
